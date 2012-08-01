@@ -1,16 +1,41 @@
 <?php
-interface IBank{
-   public function getDisconnectMysql();
-   public function getManageMysql($query);
-}
+/*
+ * @author rodolfobarretoweb@gmail.com
+ * @version 0.0.5
+ */
+require_once("IBank.php");
 
-class Bank implements IBank{     
+class Bank implements IBank{
+    /* 
+     * @var $host
+     * @acess protected
+     */
     protected $host;
+    
+    /* 
+     * @var $user
+     * @acess protected
+     */
     protected $user;
+    
+    /* 
+     * @var $password
+     * @acess protected
+     */
     protected $password;
+    
+    /* 
+     * @var $bank
+     * @acess protected
+     */
     protected $bank;
     
-    public function __construct($host = "127.0.0.1",$user = "root",$password=null,$bank = "rr"){
+    /*
+    * @acess public
+    * @param $host,$user,$passoword,$bank
+    * @return String
+    */
+    public function __construct($host = "127.0.0.1",$user = "root",$password="",$bank = "montigas"){
         $this->host     = $host;
         $this->user     = $user;
         $this->password = $password;
@@ -18,15 +43,29 @@ class Bank implements IBank{
         
         $this->connectMysql();
     }
-        
+    
+    /*
+     * @acess public
+     * @return Boolean
+    */
     public function getDisconnectMysql(){
         $this->disconnectMysql();
     }
     
+    /*
+    * @acess public
+    * @param $query
+    * @return String
+    */
     public function getManageMysql($query){
         return $this->manageMysql($query);
     }
     
+    
+    /*
+    * @acess private
+    * @return Boolean
+    */
     private function connectMysql(){
         # conecta ao bank de dados
         if(mysql_connect($this->host,$this->user,$this->password)){
@@ -42,6 +81,10 @@ class Bank implements IBank{
          
     }
     
+    /*
+    * @acess private
+    * @return Boolean
+    */
     private function disconnectMysql(){
         # fecha a conexão com o bank
         if(mysql_close()){
@@ -51,6 +94,11 @@ class Bank implements IBank{
         }
     }
     
+    /*
+    * @acess protected
+    * @param $query
+    * @return String
+    */
     protected function manageMysql($query){
         # mostra a estrutura da query
         $result = mysql_query($query);

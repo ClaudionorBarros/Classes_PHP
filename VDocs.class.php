@@ -1,36 +1,60 @@
 <?php
-interface IVDocs{
-    public function getValidateCPF();
-    public function getValidateCNPJ();
-}
+/*
+ * @author rodolfobarretoweb@gmail.com
+ * @version 0.0.3
+ */
+
+require_once("IVDocs.php");
 
 class VDocs implements IVDocs{
+    /* 
+     * @var $doc
+     * @acess protected
+    */
     protected $doc;
    
+    /*
+    * @acess public
+    * @param $doc
+    * @return String
+    */
     public function __construct($doc = null){
         $this->doc = $doc;
     }
 
+    /*
+    * @acess public
+    * @return String
+    */
     public function getValidateCPF() {
         return $this->validateCPF();
     }
     
+    /*
+    * @acess public
+    * @return String
+    */
     public function getValidateCNPJ() {
         return $this->validateCNPJ();
     }
     
-    protected function validateCPF(){        
-        $nulos = array("12345678909","11111111111","22222222222","33333333333",
+    /*
+    * @acess protected
+    * @return String
+    */
+    protected function validateCPF(){    
+         $nulos = array("12345678909","11111111111","22222222222","33333333333",
                "44444444444","55555555555","66666666666","77777777777",
                "88888888888","99999999999","00000000000");
      
         # Retira todos os caracteres que nao sejam 0-9 
         $this->doc = preg_replace("/[^0-9]/i", "", $this->doc);
-
+        
         # Retorna falso se houver letras no cpf 
-        if (in_array($this->doc, $nulos))
+        if (in_array($this->doc, $nulos)){
             return false;
-
+        }
+            
         # Calcula o penúltimo dígito verificador
         $acum=0;
         for($i=0; $i<9; $i++) {
@@ -39,6 +63,7 @@ class VDocs implements IVDocs{
 
         $x=$acum % 11;
         $acum = ($x>1) ? (11 - $x) : 0;
+        
         # Retorna falso se o digito calculado eh diferente do passado na string */
         if ($acum != $this->doc[9]){
             return false;
@@ -52,14 +77,20 @@ class VDocs implements IVDocs{
 
         $x= $acum % 11;
         $acum = ($x > 1) ? (11-$x) : 0;
+        
         # Retorna falso se o digito calculado eh diferente do passado na string 
         if ($acum != $this->doc[10]){
             return false;
         }  	
+        
         # Retorna verdadeiro se o cpf eh valido 
         return true;
     }
     
+    /*
+    * @acess protected
+    * @return String
+    */
     protected function validateCNPJ(){
         if (strlen($this->doc) <> 18) return 0; 
             $soma1 = ($this->doc[0] * 5) + 
